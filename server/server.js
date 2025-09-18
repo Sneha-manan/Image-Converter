@@ -6,6 +6,10 @@ import connectDB from './config/mongodb.js'
 import imageRouter from './routes/imageRoutes.js'
 import userRouter from './routes/userRoutes.js'
 
+
+import path from "path";
+import { fileURLToPath } from "url";
+
 const PORT = process.env.PORT || 4000
 const app = express()
 
@@ -19,3 +23,17 @@ app.use('/api/image', imageRouter)
 app.get('/', (req, res)=> {res.send("API Working fine")})
 
 app.listen(PORT, ()=> console.log('Server is running on port ' + PORT));
+
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ✅ Serve React frontend in production
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/build")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/build/index.html"));
+  });
+}
